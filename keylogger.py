@@ -16,7 +16,7 @@ class mysqlConnect:
 
     def __init__( self ):
 
-        while True: #Loop try to reconnect until achieve it.
+        while True: #Loop try connect until achieve it.
             try:
                 self.dbConnection = mysql.MySQLConnection( user = "USERNAME", password = "PASSWORD", host = "HOST", database = "DATABASE" ) #Put here your database connection info!
                 self.dbCursor = self.dbConnection.cursor( )
