@@ -71,7 +71,7 @@ def keyboardBuffering( keyCode ):
             buffer = buffer[ : -1 ] #Remove las char from buffer when backspace is pressed.
         elif keyCode in bindKeys: #Check if bindKey is pressed.
             if len( buffer ) > 0: #Check if buffer is empty.
-                cache.append( "[ %s ] -> %s" % ( time.strftime( "%H:%M:%S" ), buffer ) ) #Save current buffer in cache.
+                cache.append( [ time.strftime( "%H:%M:%S" ), buffer ] ) #Save current buffer in cache.
                 buffer = "" #Clean buffer for a new line.
     else:
         buffer += keyCode.replace( "'", "" ) #Add in buffer the pressed char.
